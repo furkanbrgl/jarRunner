@@ -1,4 +1,5 @@
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import model.CmdObj;
@@ -42,6 +43,14 @@ public class RunnerHelper {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
+            ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+
+            ///Upload the pic to server
+            sftpChannel.put("jarRunner/src/main/images/img.png", "/var/www/rug-counter/outputImages/testimage.jpeg");
+
+
+            //if the uploading is succesfull, run the cmd for the jar
             channel = (ChannelExec) session.openChannel("exec");
 
             channel.setCommand(this.generateCommand(cmdObj, credential)[2]);
@@ -56,7 +65,14 @@ public class RunnerHelper {
 
             String responseString = new String(responseStream.toByteArray());
 
+            //See how many rug we got.
             System.out.println(responseString);
+
+
+            //pull the processed image from server.
+            sftpChannel.get("/var/www/rug-counter/outputImages/testimage.jpeg", "jarRunner/src/main/images/imgProcessed.png");
+
+
         } finally {
             if (session != null) {
                 session.disconnect();

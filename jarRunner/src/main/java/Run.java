@@ -16,7 +16,7 @@ public class Run {
 
         Credential credential = new Credential("165.22.3.2",
                 "root",
-                "************************************************",
+                "GkRcGH6FeWdvyXQW5MDC",
                 "https://rug-counter.boutiquerugs.com/",
                 "/var/www/rug-counter/",
                 "22");
