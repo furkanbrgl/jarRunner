@@ -9,8 +9,8 @@ public class Run {
         CmdObj cmdObj = new CmdObj("/usr/local/share/java/opencv4/",
                 "/var/www/rug-counter/models/load_model.onnx",
                 "rugcounter.jar",
-                "/var/www/rug-counter/inputImages/image2.jpeg",
-                "/var/www/rug-counter/outputImages/result2.jpeg",
+                "/var/www/rug-counter/inputImages/img_unprocessed.jpeg",
+                "/var/www/rug-counter/outputImages/img_processed.jpeg",
                 "/usr/local/share/java/opencv4/");
 
 
@@ -23,7 +23,10 @@ public class Run {
         RunnerHelper runnerHelper = new RunnerHelper();
 
         try {
-            runnerHelper.runner(credential, cmdObj);
+            runnerHelper.runner(credential, cmdObj,
+                    "jarRunner/src/main/images/img_unprocessed.jpg",
+                    "/var/www/rug-counter/inputImages/img_unprocessed.jpeg",
+                    "/var/www/rug-counter/outputImages/img_processed.jpeg");
 
         } catch (Exception e) {
             throw new RuntimeException(e);

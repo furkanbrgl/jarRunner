@@ -32,7 +32,7 @@ public class RunnerHelper {
 
  */
 
-    public void runner(Credential credential, CmdObj cmdObj) throws Exception {
+    public void runner(Credential credential, CmdObj cmdObj, String localPicPath, String uploadTo, String downloadFrom) throws Exception {
 
         Session session = null;
         ChannelExec channel = null;
@@ -46,9 +46,12 @@ public class RunnerHelper {
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            ///Upload the pic to server
-            sftpChannel.put("jarRunner/src/main/images/img.png", "/var/www/rug-counter/outputImages/testimage.jpeg");
+            while (!sftpChannel.isConnected()) {
+                Thread.sleep(100);
+            }
 
+            ///Upload the pic to server
+            sftpChannel.put(localPicPath, uploadTo);
 
             //if the uploading is succesfull, run the cmd for the jar
             channel = (ChannelExec) session.openChannel("exec");
@@ -59,7 +62,7 @@ public class RunnerHelper {
             channel.setOutputStream(responseStream);
             channel.connect();
 
-            while (channel.isConnected()) {
+            while (!channel.isConnected()) {
                 Thread.sleep(100);
             }
 
@@ -70,7 +73,7 @@ public class RunnerHelper {
 
 
             //pull the processed image from server.
-            sftpChannel.get("/var/www/rug-counter/outputImages/testimage.jpeg", "jarRunner/src/main/images/imgProcessed.png");
+            sftpChannel.get(downloadFrom, "jarRunner/src/main/images/img_processed.jpeg");
 
 
         } finally {
